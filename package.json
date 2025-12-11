@@ -16,8 +16,8 @@
     "history": "5.3.0",
     "http-status-codes": "2.3.0",
     "leaflet": "1.7.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-helmet-async": "1.3.0",
     "react-redux": "8.1.3",
     "react-router-dom": "6.16.0"
@@ -29,8 +29,8 @@
     "@testing-library/user-event": "14.5.1",
     "@types/faker": "5.5.9",
     "@types/leaflet": "1.9.3",
-    "@types/react": "18.2.25",
-    "@types/react-dom": "18.2.11",
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7",
     "@types/react-redux": "7.1.27",
     "@types/testing-library__jest-dom": "5.14.9",
     "@typescript-eslint/eslint-plugin": "6.7.4",
@@ -43,7 +43,7 @@
     "eslint-plugin-react-refresh": "0.4.3",
     "faker": "5.5.3",
     "jsdom": "22.1.0",
-    "typescript": "5.2.2",
+    "typescript": "^5.2.2",
     "vite": "4.4.11",
     "vitest": "0.34.6"
   },
@@ -58,5 +58,18 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "* Студент: [Николай Иванов](https://up.htmlacademy.ru/univer-js3/6/user/2388237). * Наставник: `Антон Ткачук`.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ran3boy/2388237-six-cities-6.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ran3boy/2388237-six-cities-6/issues"
+  },
+  "homepage": "https://github.com/Ran3boy/2388237-six-cities-6#readme"
 }
