@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function FavoritesPage(): JSX.Element {
+export default function FavoritesPage(): JSX.Element {
   return (
     <div className="page">
       <header className="header">
