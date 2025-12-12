@@ -1,11 +1,12 @@
 import React from 'react';
-import { PlaceCard } from '../place-card/place-card';
+import { Offer } from '../../mocks/offers';
+import OfferList from '../OfferList/OfferList';
 
 type MainPageProps = {
-  placesCount: number;
+  offers: Offer[];
 };
 
-export default function MainPage({ placesCount }: MainPageProps): JSX.Element {
+export default function MainPage({ offers }: MainPageProps): JSX.Element {
   return (
     <div className="page page--gray page--main">
       <header className="header">
@@ -88,7 +89,7 @@ export default function MainPage({ placesCount }: MainPageProps): JSX.Element {
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{placesCount} places to stay in Amsterdam</b>
+              <b className="places__found">{offers.length} places to stay in Amsterdam</b>
 
 
               <form className="places__sorting" action="#" method="get">
@@ -115,41 +116,7 @@ export default function MainPage({ placesCount }: MainPageProps): JSX.Element {
                 </ul>
               </form>
 
-              <div className="cities__places-list places__list tabs__content">
-                <PlaceCard
-                  title="Beautiful & luxurious apartment at great location"
-                  type="Apartment"
-                  price={120}
-                  imageUrl="img/apartment-01.jpg"
-                  rating={80}
-                  isPremium
-                />
-                <PlaceCard
-                  title="Wood and stone place"
-                  type="Room"
-                  price={80}
-                  imageUrl="img/room.jpg"
-                  rating={80}
-                  isFavorite
-                />
-                <PlaceCard
-                  title="Canal View Prinsengracht"
-                  type="Apartment"
-                  price={132}
-                  imageUrl="img/apartment-02.jpg"
-                  rating={80}
-                />
-                <PlaceCard
-                  title="Nice, cozy, warm big bed apartment"
-                  type="Apartment"
-                  price={180}
-                  imageUrl="img/apartment-03.jpg"
-                  rating={100}
-                  isPremium
-                />
-              </div>
-
-              {/* Остальные карточки можно добавить аналогично */}
+              <OfferList offers={offers} />
             </section>
 
             <div className="cities__right-section">

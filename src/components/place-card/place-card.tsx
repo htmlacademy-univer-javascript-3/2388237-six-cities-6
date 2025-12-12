@@ -1,24 +1,13 @@
 import React from 'react';
+import { Offer } from '../../mocks/offers';
 
 interface PlaceCardProps {
-  title: string;
-  type: string;
-  price: number;
-  imageUrl: string;
-  rating: number; // 0-100 в процентах
-  isPremium?: boolean;
-  isFavorite?: boolean;
+  offer: Offer;
 }
 
-export function PlaceCard({
-  title,
-  type,
-  price,
-  imageUrl,
-  rating,
-  isPremium = false,
-  isFavorite = false,
-}: PlaceCardProps): JSX.Element {
+export function PlaceCard({ offer }: PlaceCardProps): JSX.Element {
+  const { title, type, price, imageUrl, rating, isPremium = false, isFavorite = false } = offer;
+
   return (
     <article className="cities__card place-card">
       {isPremium && (
@@ -33,7 +22,7 @@ export function PlaceCard({
             src={imageUrl}
             width={260}
             height={200}
-            alt="Place image"
+            alt={title}
           />
         </a>
       </div>
@@ -59,7 +48,7 @@ export function PlaceCard({
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{ width: `${rating}%` }}></span>
+            <span style={{ width: `${rating * 20}%` }}></span>
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
