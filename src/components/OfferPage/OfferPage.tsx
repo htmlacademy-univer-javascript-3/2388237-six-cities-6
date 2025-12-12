@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function OfferLogged(): JSX.Element {
+export default function OfferLogged(): JSX.Element {
   const ratingTitles: Record<number, string> = {
     5: 'perfect',
     4: 'good',
