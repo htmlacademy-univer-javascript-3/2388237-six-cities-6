@@ -6,18 +6,19 @@ import FavoritesPage from './FavoritesPage/FavoritesPage';
 import OfferPage from './OfferPage/OfferPage';
 import NotFoundPage from './NotFoundPage/NotFoundPage';
 import PrivateRoute from './PrivateRoute/PrivateRoute';
+import { type Offer } from '../mocks/offers';
 
 type AppProps = {
-  placesCount: number;
+  offers: Offer[];
 };
 
-function App({ placesCount }: AppProps) {
-  const isAuthorized = false; // Пока пользователь всегда не авторизован
+function App({ offers }: AppProps) {
+  const isAuthorized = false;
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<MainPage placesCount={placesCount} />} />
+        <Route path="/" element={<MainPage offers={offers} />} />
         <Route path="/login" element={<LoginPage />} />
         <Route
           path="/favorites"

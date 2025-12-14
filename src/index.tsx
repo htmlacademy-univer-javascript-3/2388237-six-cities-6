@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './components/App'; // без фигурных скобок
-
-const placesCount = 312;
+import App from './components/App';
+import { offers } from './mocks/offers'; // импортируем мок-данные
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -10,6 +9,6 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <App placesCount={placesCount} />
+    <App offers={offers} />
   </React.StrictMode>
 );
