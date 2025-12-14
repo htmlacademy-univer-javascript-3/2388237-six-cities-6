@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { Offer } from '../../mocks/offers';
 import OfferList from '../OfferList/OfferList';
+import Map from '../Map/Map';
 
 type MainPageProps = {
   offers: Offer[];
 };
 
 export default function MainPage({ offers }: MainPageProps): JSX.Element {
-  const [, setActiveOfferId] = useState<number | null>(null);
+  const [activeOfferId, setActiveOfferId] = useState<number | null>(null);
+
+  const activeOffer = offers.find((o) => o.id === activeOfferId);
+  const mapCenter = activeOffer
+    ? activeOffer.coordinates
+    : ([52.38333, 4.9] as [number, number]);
+
   return (
     <div className="page page--gray page--main">
       <header className="header">
@@ -92,7 +99,6 @@ export default function MainPage({ offers }: MainPageProps): JSX.Element {
               <h2 className="visually-hidden">Places</h2>
               <b className="places__found">{offers.length} places to stay in Amsterdam</b>
 
-
               <form className="places__sorting" action="#" method="get">
                 <span className="places__sorting-caption">Sort by</span>
                 <span className="places__sorting-type" tabIndex={0}>
@@ -117,14 +123,13 @@ export default function MainPage({ offers }: MainPageProps): JSX.Element {
                 </ul>
               </form>
 
-              <OfferList
-                offers={offers}
-                onOfferHover={setActiveOfferId}
-              />
+              <OfferList offers={offers} onOfferHover={setActiveOfferId} />
             </section>
 
             <div className="cities__right-section">
-              <section className="cities__map map"></section>
+              <section className="cities__map map">
+                <Map offers={offers} center={mapCenter} zoom={12} />
+              </section>
             </div>
           </div>
         </div>

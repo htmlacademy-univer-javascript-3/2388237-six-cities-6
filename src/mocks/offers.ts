@@ -1,14 +1,14 @@
-export type Offer = {
+export interface Offer {
   id: number;
   title: string;
-  type: 'Apartment' | 'Room' | 'Studio';
+  type: string;
   price: number;
   rating: number;
+  imageUrl: string;
   isPremium?: boolean;
   isFavorite?: boolean;
-  imageUrl: string;
-  city: string;
-};
+  coordinates: [number, number]; // [широта, долгота]
+}
 
 export const offers: Offer[] = [
   {
@@ -17,37 +17,36 @@ export const offers: Offer[] = [
     type: 'Apartment',
     price: 120,
     rating: 4.8,
-    isPremium: true,
     imageUrl: 'img/apartment-01.jpg',
-    city: 'Amsterdam',
+    isPremium: true,
+    isFavorite: false,
+    coordinates: [52.3909553943508, 4.85309666406198],
   },
   {
     id: 2,
     title: 'Wood and stone place',
-    type: 'Room',
+    type: 'Private room',
     price: 80,
-    rating: 4.0,
-    isFavorite: true,
+    rating: 4.3,
     imageUrl: 'img/room.jpg',
-    city: 'Amsterdam',
+    coordinates: [52.3609553943508, 4.85309666406198],
   },
   {
     id: 3,
     title: 'Canal View Prinsengracht',
     type: 'Apartment',
     price: 132,
-    rating: 4.5,
+    rating: 4.9,
     imageUrl: 'img/apartment-02.jpg',
-    city: 'Amsterdam',
+    coordinates: [52.3909553943508, 4.929309666406198],
   },
   {
     id: 4,
     title: 'Nice, cozy, warm big bed apartment',
     type: 'Apartment',
     price: 180,
-    rating: 5.0,
-    isPremium: true,
+    rating: 5,
     imageUrl: 'img/apartment-03.jpg',
-    city: 'Amsterdam',
+    coordinates: [52.3809553943508, 4.939309666406198],
   },
 ];
