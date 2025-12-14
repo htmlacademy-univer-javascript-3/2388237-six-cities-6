@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/App';
-import { offers } from './mocks/offers'; // импортируем мок-данные
+import { offers } from './mocks/offers';
+import 'leaflet/dist/leaflet.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
