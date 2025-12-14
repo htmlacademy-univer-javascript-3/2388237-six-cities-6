@@ -1,22 +1,33 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Offer } from '../../mocks/offers';
 
 interface PlaceCardProps {
   offer: Offer;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
-export function PlaceCard({ offer }: PlaceCardProps): JSX.Element {
-  const { title, type, price, imageUrl, rating, isPremium = false, isFavorite = false } = offer;
+export function PlaceCard({
+  offer,
+  onMouseEnter,
+  onMouseLeave,
+}: PlaceCardProps): JSX.Element {
+  const { id, title, type, price, imageUrl, rating, isPremium = false, isFavorite = false } = offer;
 
   return (
-    <article className="cities__card place-card">
+    <article
+      className="cities__card place-card"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       {isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
       )}
       <div className="cities__image-wrapper place-card__image-wrapper">
-        <a href="#">
+        <Link to={`/offer/${id}`}>
           <img
             className="place-card__image"
             src={imageUrl}
@@ -24,7 +35,7 @@ export function PlaceCard({ offer }: PlaceCardProps): JSX.Element {
             height={200}
             alt={title}
           />
-        </a>
+        </Link>
       </div>
       <div className="place-card__info">
         <div className="place-card__price-wrapper">
@@ -48,12 +59,12 @@ export function PlaceCard({ offer }: PlaceCardProps): JSX.Element {
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{ width: `${rating * 20}%` }}></span>
+            <span style={{ width: `${rating * 20}%` }} />
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
         <h2 className="place-card__name">
-          <a href="#">{title}</a>
+          <Link to={`/offer/${id}`}>{title}</Link>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>

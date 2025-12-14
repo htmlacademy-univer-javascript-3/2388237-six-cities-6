@@ -9,6 +9,6 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <App offers={offers} /> {/* передаём моки через пропсы */}
+    <App offers={offers} />
   </React.StrictMode>
 );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Offer } from '../../mocks/offers';
 import OfferList from '../OfferList/OfferList';
 
@@ -7,6 +7,7 @@ type MainPageProps = {
 };
 
 export default function MainPage({ offers }: MainPageProps): JSX.Element {
+  const [, setActiveOfferId] = useState<number | null>(null);
   return (
     <div className="page page--gray page--main">
       <header className="header">
@@ -116,7 +117,10 @@ export default function MainPage({ offers }: MainPageProps): JSX.Element {
                 </ul>
               </form>
 
-              <OfferList offers={offers} />
+              <OfferList
+                offers={offers}
+                onOfferHover={setActiveOfferId}
+              />
             </section>
 
             <div className="cities__right-section">

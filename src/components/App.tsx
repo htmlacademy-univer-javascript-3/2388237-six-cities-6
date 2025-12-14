@@ -6,7 +6,7 @@ import FavoritesPage from './FavoritesPage/FavoritesPage';
 import OfferPage from './OfferPage/OfferPage';
 import NotFoundPage from './NotFoundPage/NotFoundPage';
 import PrivateRoute from './PrivateRoute/PrivateRoute';
-import { type Offer } from '../mocks/offers'; // тип, только для TS
+import { type Offer } from '../mocks/offers';
 
 type AppProps = {
   offers: Offer[];
