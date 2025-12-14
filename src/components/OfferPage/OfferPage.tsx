@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { offers, Offer } from '../../mocks/offers';
-import { PlaceCard } from '../PlaceCard/PlaceCard';
+import { PlaceCard } from '../place-card/place-card';
 import { OfferCard } from '../OfferCard/OfferCard';
 
 export default function OfferPage(): JSX.Element {
