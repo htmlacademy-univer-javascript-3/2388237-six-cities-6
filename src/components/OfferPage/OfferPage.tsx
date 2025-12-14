@@ -1,8 +1,11 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { offers, Offer } from '../../mocks/offers';
-import { PlaceCard } from '../place-card/place-card';
+import { reviews } from '../../mocks/reviews';
 import { OfferCard } from '../OfferCard/OfferCard';
+import { PlaceCard } from '../place-card/place-card';
+import ReviewsList from '../Reviews/ReviewsList';
+import Map from '../Map/Map';
 
 export default function OfferPage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
@@ -12,13 +15,15 @@ export default function OfferPage(): JSX.Element {
     return <div>Offer not found</div>;
   }
 
+  const mapCenter: [number, number] = offer.coordinates;
+
   return (
     <div className="page">
       <header className="header">
         <div className="container">
           <div className="header__wrapper">
             <div className="header__left">
-              <a className="header__logo-link" href="main.html">
+              <a className="header__logo-link" href="/main">
                 <img
                   className="header__logo"
                   src="img/logo.svg"
@@ -33,7 +38,9 @@ export default function OfferPage(): JSX.Element {
                 <li className="header__nav-item user">
                   <a className="header__nav-link header__nav-link--profile" href="#">
                     <div className="header__avatar-wrapper user__avatar-wrapper" />
-                    <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
+                    <span className="header__user-name user__name">
+                      Oliver.conner@gmail.com
+                    </span>
                     <span className="header__favorite-count">3</span>
                   </a>
                 </li>
@@ -55,12 +62,19 @@ export default function OfferPage(): JSX.Element {
               <div className="offer__image-wrapper">
                 <img className="offer__image" src={offer.imageUrl} alt={offer.title} />
               </div>
+              {/* При необходимости сюда можно добавить остальные фото */}
             </div>
           </div>
 
           <div className="offer__container container">
             <OfferCard offer={offer} />
           </div>
+
+          <section className="offer__map map">
+            <Map offers={offers} center={mapCenter} zoom={12} />
+          </section>
+
+          <ReviewsList reviews={reviews} />
         </section>
 
         <div className="container">
