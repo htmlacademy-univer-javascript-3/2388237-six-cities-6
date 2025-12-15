@@ -1,19 +1,31 @@
-import React, { useState } from 'react';
-import { Offer } from '../../mocks/offers';
+import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import OfferList from '../OfferList/OfferList';
 import Map from '../Map/Map';
+import CitiesList from '../cities-list/cities-list';
+import { CITIES } from '../../const';
+import { getOffersByCity, getCity } from '../../store/selectors';
+import { changeCity } from '../../store/action';
+import { Offer } from '../../mocks/offers';
 
-type MainPageProps = {
-  offers: Offer[];
-};
+export default function MainPage(): JSX.Element {
+  const dispatch = useDispatch();
 
-export default function MainPage({ offers }: MainPageProps): JSX.Element {
+  const activeCity = useSelector(getCity);
+  const offers = useSelector(getOffersByCity);
+
   const [activeOfferId, setActiveOfferId] = useState<number | null>(null);
 
-  const activeOffer = offers.find((o) => o.id === activeOfferId);
-  const mapCenter = activeOffer
-    ? activeOffer.coordinates
-    : ([52.38333, 4.9] as [number, number]);
+  const activeOffer = offers.find((o: Offer) => o.id === activeOfferId);
+
+  const defaultCoordinates: [number, number] = [52.38333, 4.9];
+  let mapCenter: [number, number] = defaultCoordinates;
+
+  if (activeOffer) {
+    mapCenter = activeOffer.coordinates;
+  } else if (offers.length > 0) {
+    mapCenter = offers[0].coordinates;
+  }
 
   return (
     <div className="page page--gray page--main">
@@ -57,47 +69,20 @@ export default function MainPage({ offers }: MainPageProps): JSX.Element {
         <h1 className="visually-hidden">Cities</h1>
 
         <div className="tabs">
-          <section className="locations container">
-            <ul className="locations__list tabs__list">
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Paris</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Cologne</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Brussels</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item tabs__item--active">
-                  <span>Amsterdam</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Hamburg</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Dusseldorf</span>
-                </a>
-              </li>
-            </ul>
-          </section>
+          <CitiesList
+            cities={CITIES}
+            activeCity={activeCity}
+            onCityClick={(city: string) => dispatch(changeCity(city))}
+          />
         </div>
 
         <div className="cities">
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{offers.length} places to stay in Amsterdam</b>
+              <b className="places__found">
+                {offers.length} places to stay in {activeCity}
+              </b>
 
               <form className="places__sorting" action="#" method="get">
                 <span className="places__sorting-caption">Sort by</span>
