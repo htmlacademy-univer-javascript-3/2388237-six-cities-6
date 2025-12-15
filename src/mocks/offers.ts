@@ -5,9 +5,10 @@ export interface Offer {
   price: number;
   rating: number;
   imageUrl: string;
+  city: string;
   isPremium?: boolean;
   isFavorite?: boolean;
-  coordinates: [number, number]; // [широта, долгота]
+  coordinates: [number, number];
 }
 
 export const offers: Offer[] = [
@@ -18,6 +19,7 @@ export const offers: Offer[] = [
     price: 120,
     rating: 4.8,
     imageUrl: 'img/apartment-01.jpg',
+    city: 'Amsterdam',
     isPremium: true,
     isFavorite: false,
     coordinates: [52.3909553943508, 4.85309666406198],
@@ -29,6 +31,7 @@ export const offers: Offer[] = [
     price: 80,
     rating: 4.3,
     imageUrl: 'img/room.jpg',
+    city: 'Amsterdam',
     coordinates: [52.3609553943508, 4.85309666406198],
   },
   {
@@ -38,6 +41,7 @@ export const offers: Offer[] = [
     price: 132,
     rating: 4.9,
     imageUrl: 'img/apartment-02.jpg',
+    city: 'Amsterdam',
     coordinates: [52.3909553943508, 4.929309666406198],
   },
   {
@@ -47,6 +51,7 @@ export const offers: Offer[] = [
     price: 180,
     rating: 5,
     imageUrl: 'img/apartment-03.jpg',
+    city: 'Amsterdam',
     coordinates: [52.3809553943508, 4.939309666406198],
   },
 ];
