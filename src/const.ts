@@ -1,4 +1,5 @@
 export const CITIES: string[] = [
+  'All',
   'Paris',
   'Cologne',
   'Brussels',

@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../store';
 import OfferList from '../OfferList/OfferList';
 import Map from '../Map/Map';
 import CitiesList from '../cities-list/cities-list';
 import { CITIES } from '../../const';
-import { getOffersByCity, getCity } from '../../store/selectors';
+import { getCity, getOffersByCity } from '../../store/selectors';
 import { changeCity } from '../../store/action';
 import { Offer } from '../../mocks/offers';
+
 
 export default function MainPage(): JSX.Element {
   const dispatch = useDispatch();
 
-  const activeCity = useSelector(getCity);
-  const offers = useSelector(getOffersByCity);
+  const activeCity = useSelector((state: RootState) => getCity(state));
+  const offers = useSelector((state: RootState) => getOffersByCity(state));
 
   const [activeOfferId, setActiveOfferId] = useState<number | null>(null);
 

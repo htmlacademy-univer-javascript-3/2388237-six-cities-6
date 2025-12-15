@@ -12,7 +12,10 @@ export default function CitiesList({ cities, activeCity, onCityClick }: CitiesLi
           <li className="locations__item" key={city}>
             <a
               className={`locations__item-link tabs__item ${city === activeCity ? 'tabs__item--active' : ''}`}
-              onClick={() => onCityClick(city)}
+              onClick={(evt) => {
+                evt.preventDefault();
+                onCityClick(city);
+              }}
               href="#"
             >
               <span>{city}</span>
