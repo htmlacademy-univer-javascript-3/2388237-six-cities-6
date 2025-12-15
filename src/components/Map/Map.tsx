@@ -7,10 +7,17 @@ type MapProps = {
   offers: Offer[];
   center: [number, number];
   zoom: number;
+  activeOfferId?: number | null;
 };
 
 const defaultIcon = new Icon({
   iconUrl: 'img/pin.svg',
+  iconSize: [30, 30],
+  iconAnchor: [15, 30],
+});
+
+const activeIcon = new Icon({
+  iconUrl: 'img/pin-active.svg',
   iconSize: [30, 30],
   iconAnchor: [15, 30],
 });
@@ -21,13 +28,9 @@ function ChangeView({ center, zoom }: { center: [number, number]; zoom: number }
   return null;
 }
 
-export default function Map({ offers, center, zoom }: MapProps): JSX.Element {
+export default function Map({ offers, center, zoom, activeOfferId }: MapProps): JSX.Element {
   return (
-    <MapContainer
-      center={center}
-      zoom={zoom}
-      style={{ height: '100%', width: '100%' }}
-    >
+    <MapContainer center={center} zoom={zoom} style={{ height: '100%', width: '100%' }}>
       <ChangeView center={center} zoom={zoom} />
 
       <TileLayer
@@ -39,7 +42,7 @@ export default function Map({ offers, center, zoom }: MapProps): JSX.Element {
         <Marker
           key={offer.id}
           position={offer.coordinates}
-          icon={defaultIcon}
+          icon={offer.id === activeOfferId ? activeIcon : defaultIcon} // подсветка активного маркера
         >
           <Popup>{offer.title}</Popup>
         </Marker>
