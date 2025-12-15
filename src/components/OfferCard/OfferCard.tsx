@@ -3,11 +3,17 @@ import { Offer } from '../../mocks/offers';
 
 interface OfferCardProps {
   offer: Offer;
+  onHover?: () => void;
+  onLeave?: () => void;
 }
 
-export function OfferCard({ offer }: OfferCardProps): JSX.Element {
+export function OfferCard({ offer, onHover, onLeave }: OfferCardProps): JSX.Element {
   return (
-    <div className="offer__wrapper">
+    <div
+      className="offer__wrapper"
+      onMouseEnter={onHover}
+      onMouseLeave={onLeave}
+    >
       {offer.isPremium && (
         <div className="offer__mark">
           <span>Premium</span>
