@@ -1,8 +1,13 @@
-import React from 'react';
-import { offers } from '../../mocks/offers';
 import OfferList from '../OfferList/OfferList';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { Offer } from '../../types';
 
 export default function FavoritesPage(): JSX.Element {
+  const favorites: Offer[] = useSelector((state: RootState) =>
+    state.offersReducer.offers.filter((offer) => offer.isFavorite)
+  );
+
   return (
     <div className="page">
       <header className="header">
@@ -27,7 +32,7 @@ export default function FavoritesPage(): JSX.Element {
                     <span className="header__user-name user__name">
                       Oliver.conner@gmail.com
                     </span>
-                    <span className="header__favorite-count">3</span>
+                    <span className="header__favorite-count">{favorites.length}</span>
                   </a>
                 </li>
                 <li className="header__nav-item">
@@ -43,12 +48,16 @@ export default function FavoritesPage(): JSX.Element {
 
       <main className="page__main page__main--favorites">
         <div className="page__favorites-container container">
-          <section className="favorites">
-            <h1 className="favorites__title">Saved listing</h1>
-            <div className="favorites__places">
-              <OfferList offers={offers} />
-            </div>
-          </section>
+          {favorites.length > 0 ? (
+            <section className="favorites">
+              <h1 className="favorites__title">Saved listing</h1>
+              <div className="favorites__places">
+                <OfferList offers={favorites} />
+              </div>
+            </section>
+          ) : (
+            <p>No saved offers</p>
+          )}
         </div>
       </main>
 

@@ -1,7 +1,5 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { offers, Offer } from '../../mocks/offers';
-import { reviews } from '../../mocks/reviews';
 import { OfferCard } from '../OfferCard/OfferCard';
 import { PlaceCard } from '../place-card/place-card';
 import ReviewsList from '../Reviews/ReviewsList';

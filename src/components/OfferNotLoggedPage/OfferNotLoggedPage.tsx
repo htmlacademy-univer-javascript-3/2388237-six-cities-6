@@ -1,5 +1,3 @@
-import React from 'react';
-
 export function OfferNotLogged(): JSX.Element {
   return (
     <div className="page">

@@ -7,7 +7,6 @@ import CitiesList from '../cities-list/cities-list';
 import { CITIES } from '../../const';
 import { getCity, getOffersByCity } from '../../store/selectors';
 import { changeCity } from '../../store/action';
-import { Offer } from '../../mocks/offers';
 import SortOptions, { SortType } from '../SortOptions/SortOptions';
 
 export default function MainPage(): JSX.Element {

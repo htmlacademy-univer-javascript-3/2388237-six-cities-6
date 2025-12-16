@@ -1,6 +1,4 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { Offer } from '../../mocks/offers';
 
 interface PlaceCardProps {
   offer: Offer;

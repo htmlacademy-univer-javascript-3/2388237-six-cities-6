@@ -1,5 +1,3 @@
-import React from 'react';
-
 export type SortType = 'popular' | 'priceLowToHigh' | 'priceHighToLow' | 'topRated';
 
 interface SortOptionsProps {

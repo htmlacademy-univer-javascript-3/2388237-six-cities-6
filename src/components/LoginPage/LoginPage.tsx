@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function LoginPage(): JSX.Element {
   return (
     <div className="page page--gray page--login">

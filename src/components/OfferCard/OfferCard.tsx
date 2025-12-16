@@ -1,6 +1,3 @@
-import React from 'react';
-import { Offer } from '../../mocks/offers';
-
 interface OfferCardProps {
   offer: Offer;
   onHover?: () => void;

@@ -1,7 +1,6 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Offer } from '../../mocks/offers';
 
 type MapProps = {
   offers: Offer[];

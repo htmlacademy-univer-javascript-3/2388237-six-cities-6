@@ -1,4 +1,3 @@
-import React from 'react';
 import { Review as ReviewType } from '../../mocks/reviews';
 import Review from './Review';
 
