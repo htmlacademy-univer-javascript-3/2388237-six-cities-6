@@ -1,19 +1,20 @@
 import { configureStore } from '@reduxjs/toolkit';
 import axios, { AxiosInstance } from 'axios';
-import { reducer } from './reducer';
+import { rootReducer } from './root-reducer';
+
+const API_URL = 'https://14.design.htmlacademy.pro/six-cities';
+const TIMEOUT = 5000;
 
 export const api: AxiosInstance = axios.create({
-  baseURL: 'https://14.design.htmlacademy.pro/six-cities',
-  timeout: 5000,
+  baseURL: API_URL,
+  timeout: TIMEOUT,
 });
 
 export const store = configureStore({
-  reducer,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      thunk: {
-        extraArgument: api,
-      },
+      thunk: { extraArgument: api },
       serializableCheck: false,
     }),
 });

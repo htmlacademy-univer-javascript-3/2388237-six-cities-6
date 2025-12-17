@@ -1,9 +1,9 @@
 import { User } from './user';
 
-export interface Review {
+export type Review = {
   id: number;
-  user: User;
-  rating: number;
-  comment: string;
   date: string;
-}
+  user: User;
+  comment: string;
+  rating: number;
+};

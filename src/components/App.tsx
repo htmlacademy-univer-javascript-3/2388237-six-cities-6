@@ -1,19 +1,23 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
 import MainPage from './main-page/main-page';
 import LoginPage from './LoginPage/LoginPage';
 import FavoritesPage from './FavoritesPage/FavoritesPage';
 import OfferPage from './OfferPage/OfferPage';
 import NotFoundPage from './NotFoundPage/NotFoundPage';
 import PrivateRoute from './PrivateRoute/PrivateRoute';
-import { useDispatch } from 'react-redux';
-import { loadOffers } from '../store/action';
 
-function App() {
-  const dispatch = useDispatch();
+import { fetchOffersAction } from '../store/slices/offers-slice';
+import { useAppDispatch } from '../hooks';
+
+export default function App(): JSX.Element {
+  const dispatch = useAppDispatch();
+
   const isAuthorized = false;
 
   useEffect(() => {
-    dispatch(loadOffers(offers));
+    dispatch(fetchOffersAction());
   }, [dispatch]);
 
   return (
@@ -35,5 +39,3 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;
