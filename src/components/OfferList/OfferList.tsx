@@ -1,25 +1,16 @@
-import React from 'react';
-import { PlaceCard } from '../place-card/place-card';
-import { Offer } from '../../mocks/offers';
+import { Offer } from '../../types/offer';
+import OfferCard from '../OfferCard/OfferCard';
 
-interface OfferListProps {
+type OfferListProps = {
   offers: Offer[];
-  onOfferHover?: (offerId: number | null) => void;
-}
+  onOfferHover?: (id: number | null) => void;
+};
 
-export default function OfferList({
-  offers,
-  onOfferHover = () => {},
-}: OfferListProps): JSX.Element {
+export default function OfferList({ offers, onOfferHover }: OfferListProps): JSX.Element {
   return (
     <div className="cities__places-list places__list tabs__content">
       {offers.map((offer) => (
-        <PlaceCard
-          key={offer.id}
-          offer={offer}
-          onMouseEnter={() => onOfferHover(offer.id)}
-          onMouseLeave={() => onOfferHover(null)}
-        />
+        <OfferCard key={offer.id} offer={offer} onHover={onOfferHover} />
       ))}
     </div>
   );

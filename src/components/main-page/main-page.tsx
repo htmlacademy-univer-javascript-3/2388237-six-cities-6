@@ -1,50 +1,63 @@
-import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../store';
-import OfferList from '../OfferList/OfferList';
-import Map from '../Map/Map';
+import { useMemo, useState } from 'react';
+
+import { CITIES, CityName } from '../../const';
+import { changeCity } from '../../store/slices/offers-slice';
+import {
+  selectCity,
+  selectIsOffersLoading,
+  selectOffersByCity,
+  selectOffersError,
+} from '../../store/selectors';
+
 import CitiesList from '../cities-list/cities-list';
-import { CITIES } from '../../const';
-import { getCity, getOffersByCity } from '../../store/selectors';
-import { changeCity } from '../../store/action';
-import { Offer } from '../../mocks/offers';
+import Map from '../Map/Map';
+import OfferList from '../OfferList/OfferList';
 import SortOptions, { SortType } from '../SortOptions/SortOptions';
+import Spinner from '../Spinner';
+
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 export default function MainPage(): JSX.Element {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const activeCity = useSelector((state: RootState) => getCity(state));
-  const offers = useSelector((state: RootState) => getOffersByCity(state));
+  const activeCity = useAppSelector(selectCity);
+  const offers = useAppSelector(selectOffersByCity);
+  const isLoading = useAppSelector(selectIsOffersLoading);
+  const error = useAppSelector(selectOffersError);
 
   const [activeOfferId, setActiveOfferId] = useState<number | null>(null);
   const [sortType, setSortType] = useState<SortType>('popular');
 
-  const activeOffer = offers.find((o: Offer) => o.id === activeOfferId);
+  const sortedOffers = useMemo(() => {
+    const result = [...offers];
 
-  const defaultCoordinates: [number, number] = [52.38333, 4.9];
-  let mapCenter: [number, number] = defaultCoordinates;
+    switch (sortType) {
+      case 'priceLowToHigh':
+        return result.sort((a, b) => a.price - b.price);
+      case 'priceHighToLow':
+        return result.sort((a, b) => b.price - a.price);
+      case 'topRated':
+        return result.sort((a, b) => b.rating - a.rating);
+      case 'popular':
+      default:
+        return result;
+    }
+  }, [offers, sortType]);
 
+  const activeOffer = sortedOffers.find((o) => o.id === activeOfferId);
+
+  let mapCenter: [number, number] = [52.38333, 4.9];
+  if (sortedOffers.length > 0) {
+    mapCenter = [
+      sortedOffers[0].city.location.latitude,
+      sortedOffers[0].city.location.longitude,
+    ];
+  }
   if (activeOffer) {
-    mapCenter = activeOffer.coordinates;
-  } else if (offers.length > 0) {
-    mapCenter = offers[0].coordinates;
+    mapCenter = [activeOffer.location.latitude, activeOffer.location.longitude];
   }
 
-  const sortedOffers = [...offers];
-  switch (sortType) {
-    case 'priceLowToHigh':
-      sortedOffers.sort((a, b) => a.price - b.price);
-      break;
-    case 'priceHighToLow':
-      sortedOffers.sort((a, b) => b.price - a.price);
-      break;
-    case 'topRated':
-      sortedOffers.sort((a, b) => b.rating - a.rating);
-      break;
-    case 'popular':
-    default:
-      break;
-  }
+  const zoom = sortedOffers.length > 0 ? sortedOffers[0].city.location.zoom : 12;
 
   return (
     <div className="page page--gray page--main">
@@ -52,7 +65,7 @@ export default function MainPage(): JSX.Element {
         <div className="container">
           <div className="header__wrapper">
             <div className="header__left">
-              <a className="header__logo-link header__logo-link--active">
+              <a className="header__logo-link header__logo-link--active" href="/">
                 <img
                   className="header__logo"
                   src="img/logo.svg"
@@ -64,18 +77,9 @@ export default function MainPage(): JSX.Element {
             </div>
             <nav className="header__nav">
               <ul className="header__nav-list">
-                <li className="header__nav-item user">
-                  <a className="header__nav-link header__nav-link--profile" href="#">
-                    <div className="header__avatar-wrapper user__avatar-wrapper" />
-                    <span className="header__user-name user__name">
-                      Oliver.conner@gmail.com
-                    </span>
-                    <span className="header__favorite-count">3</span>
-                  </a>
-                </li>
                 <li className="header__nav-item">
-                  <a className="header__nav-link" href="#">
-                    <span className="header__signout">Sign out</span>
+                  <a className="header__nav-link" href="/login">
+                    <span className="header__signout">Sign in</span>
                   </a>
                 </li>
               </ul>
@@ -91,7 +95,7 @@ export default function MainPage(): JSX.Element {
           <CitiesList
             cities={CITIES}
             activeCity={activeCity}
-            onCityClick={(city: string) => dispatch(changeCity(city))}
+            onCityClick={(city: CityName) => dispatch(changeCity(city))}
           />
         </div>
 
@@ -99,18 +103,37 @@ export default function MainPage(): JSX.Element {
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">
-                {offers.length} places to stay in {activeCity}
-              </b>
 
-              <SortOptions sortType={sortType} onSortChange={setSortType} />
+              {isLoading && <Spinner />}
 
-              <OfferList offers={sortedOffers} onOfferHover={setActiveOfferId} />
+              {!isLoading && error && (
+                <p style={{ padding: 16 }}>
+                  Не удалось загрузить предложения. Попробуйте обновить страницу.
+                </p>
+              )}
+
+              {!isLoading && !error && (
+                <>
+                  <b className="places__found">
+                    {sortedOffers.length} places to stay in {activeCity}
+                  </b>
+
+                  <SortOptions sortType={sortType} onSortChange={setSortType} />
+                  <OfferList offers={sortedOffers} onOfferHover={setActiveOfferId} />
+                </>
+              )}
             </section>
 
             <div className="cities__right-section">
               <section className="cities__map map">
-                <Map offers={sortedOffers} center={mapCenter} zoom={12} activeOfferId={activeOfferId} />
+                {!isLoading && !error && (
+                  <Map
+                    offers={sortedOffers}
+                    center={mapCenter}
+                    zoom={zoom}
+                    activeOfferId={activeOfferId}
+                  />
+                )}
               </section>
             </div>
           </div>

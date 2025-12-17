@@ -1,7 +1,8 @@
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Icon } from 'leaflet';
+import { useEffect, useRef } from 'react';
+import leaflet, { Map as LeafletMap, Marker } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Offer } from '../../mocks/offers';
+
+import { Offer } from '../../types/offer';
 
 type MapProps = {
   offers: Offer[];
@@ -10,43 +11,70 @@ type MapProps = {
   activeOfferId?: number | null;
 };
 
-const defaultIcon = new Icon({
+const defaultIcon = leaflet.icon({
   iconUrl: 'img/pin.svg',
-  iconSize: [30, 30],
-  iconAnchor: [15, 30],
+  iconSize: [27, 39],
+  iconAnchor: [13, 39],
 });
 
-const activeIcon = new Icon({
+const activeIcon = leaflet.icon({
   iconUrl: 'img/pin-active.svg',
-  iconSize: [30, 30],
-  iconAnchor: [15, 30],
+  iconSize: [27, 39],
+  iconAnchor: [13, 39],
 });
 
-function ChangeView({ center, zoom }: { center: [number, number]; zoom: number }) {
-  const map = useMap();
-  map.setView(center, zoom);
-  return null;
-}
+export default function Map({ offers, center, zoom, activeOfferId = null }: MapProps): JSX.Element {
+  const mapRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<LeafletMap | null>(null);
+  const markersRef = useRef<Marker[]>([]);
 
-export default function Map({ offers, center, zoom, activeOfferId }: MapProps): JSX.Element {
-  return (
-    <MapContainer center={center} zoom={zoom} style={{ height: '100%', width: '100%' }}>
-      <ChangeView center={center} zoom={zoom} />
+  useEffect(() => {
+    if (!mapRef.current || mapInstanceRef.current) {
+      return;
+    }
 
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution="&copy; OpenStreetMap contributors"
-      />
+    const map = leaflet.map(mapRef.current).setView(center, zoom);
 
-      {offers.map((offer) => (
-        <Marker
-          key={offer.id}
-          position={offer.coordinates}
-          icon={offer.id === activeOfferId ? activeIcon : defaultIcon} // подсветка активного маркера
-        >
-          <Popup>{offer.title}</Popup>
-        </Marker>
-      ))}
-    </MapContainer>
-  );
+    leaflet
+      .tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+      })
+      .addTo(map);
+
+    mapInstanceRef.current = map;
+  }, [center, zoom]);
+
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) {
+      return;
+    }
+
+    map.setView(center, zoom);
+  }, [center, zoom]);
+
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) {
+      return;
+    }
+
+    // удалить старые маркеры
+    markersRef.current.forEach((m) => m.remove());
+    markersRef.current = [];
+
+    // добавить новые
+    offers.forEach((offer) => {
+      const marker = leaflet.marker(
+        [offer.location.latitude, offer.location.longitude],
+        { icon: offer.id === activeOfferId ? activeIcon : defaultIcon }
+      );
+
+      marker.bindPopup(offer.title);
+      marker.addTo(map);
+      markersRef.current.push(marker);
+    });
+  }, [offers, activeOfferId]);
+
+  return <div ref={mapRef} style={{ height: '100%' }} />;
 }

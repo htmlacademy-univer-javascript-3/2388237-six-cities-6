@@ -1,77 +1,63 @@
-import React from 'react';
-import { Offer } from '../../mocks/offers';
+import { Link } from 'react-router-dom';
+import { Offer } from '../../types/offer';
 
-interface OfferCardProps {
+type OfferCardProps = {
   offer: Offer;
-  onHover?: () => void;
-  onLeave?: () => void;
-}
+  onHover?: (id: number | null) => void;
+};
 
-export function OfferCard({ offer, onHover, onLeave }: OfferCardProps): JSX.Element {
+export default function OfferCard({ offer, onHover }: OfferCardProps): JSX.Element {
+  const ratingWidth = `${Math.round(offer.rating) * 20}%`;
+
   return (
-    <div
-      className="offer__wrapper"
-      onMouseEnter={onHover}
-      onMouseLeave={onLeave}
+    <article
+      className="cities__card place-card"
+      onMouseEnter={() => onHover?.(offer.id)}
+      onMouseLeave={() => onHover?.(null)}
     >
       {offer.isPremium && (
-        <div className="offer__mark">
+        <div className="place-card__mark">
           <span>Premium</span>
         </div>
       )}
 
-      <div className="offer__name-wrapper">
-        <h1 className="offer__name">{offer.title}</h1>
-        <button className="offer__bookmark-button button" type="button">
-          <svg className="offer__bookmark-icon" width={31} height={33}>
-            <use href="#icon-bookmark" />
-          </svg>
-          <span className="visually-hidden">
-            {offer.isFavorite ? 'In bookmarks' : 'To bookmarks'}
-          </span>
-        </button>
+      <div className="cities__image-wrapper place-card__image-wrapper">
+        <Link to={`/offer/${offer.id}`}>
+          <img className="place-card__image" src={offer.previewImage} width="260" height="200" alt={offer.title} />
+        </Link>
       </div>
 
-      <div className="offer__rating rating">
-        <div className="offer__stars rating__stars">
-          <span style={{ width: `${offer.rating * 20}%` }} />
-          <span className="visually-hidden">Rating</span>
+      <div className="place-card__info">
+        <div className="place-card__price-wrapper">
+          <div className="place-card__price">
+            <b className="place-card__price-value">&euro;{offer.price}</b>
+            <span className="place-card__price-text">&#47;&nbsp;night</span>
+          </div>
+
+          <button
+            className={`place-card__bookmark-button button ${offer.isFavorite ? 'place-card__bookmark-button--active' : ''}`}
+            type="button"
+          >
+            <svg className="place-card__bookmark-icon" width="18" height="19">
+              <use xlinkHref="#icon-bookmark" />
+            </svg>
+            <span className="visually-hidden">To bookmarks</span>
+          </button>
         </div>
-        <span className="offer__rating-value rating__value">{offer.rating}</span>
-      </div>
 
-      <ul className="offer__features">
-        <li className="offer__feature offer__feature--entire">{offer.type}</li>
-        <li className="offer__feature offer__feature--bedrooms">3 Bedrooms</li>
-        <li className="offer__feature offer__feature--adults">Max 4 adults</li>
-      </ul>
+        <div className="place-card__rating rating">
+          <div className="place-card__stars rating__stars">
+            <span style={{ width: ratingWidth }} />
+            <span className="visually-hidden">Rating</span>
+          </div>
+        </div>
 
-      <div className="offer__price">
-        <b className="offer__price-value">&euro;{offer.price}</b>
-        <span className="offer__price-text">&nbsp;night</span>
-      </div>
+        <h2 className="place-card__name">
+          <Link to={`/offer/${offer.id}`}>{offer.title}</Link>
+        </h2>
 
-      <div className="offer__inside">
-        <h2 className="offer__inside-title">What&apos;s inside</h2>
-        <ul className="offer__inside-list">
-          {[
-            'Wi-Fi',
-            'Washing machine',
-            'Towels',
-            'Heating',
-            'Coffee machine',
-            'Baby seat',
-            'Kitchen',
-            'Dishwasher',
-            'Cable TV',
-            'Fridge',
-          ].map((item) => (
-            <li key={item} className="offer__inside-item">
-              {item}
-            </li>
-          ))}
-        </ul>
+        <p className="place-card__type">{offer.type}</p>
       </div>
-    </div>
+    </article>
   );
 }
