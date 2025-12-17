@@ -37,7 +37,6 @@ export default function LoginPage(): JSX.Element {
           <section className="login">
             <h1 className="login__title">Sign in</h1>
 
-            {/* ВАЖНО: убрал action/method, и есть onSubmit */}
             <form className="login__form form" onSubmit={handleSubmit}>
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">E-mail</label>
