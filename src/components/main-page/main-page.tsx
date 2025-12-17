@@ -1,12 +1,20 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import { CITIES, CityName } from '../../const';
+import { AuthorizationStatus, CITIES, CityName } from '../../const';
+import { dropToken } from '../../services/token';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+
 import { changeCity } from '../../store/slices/offers-slice';
+import { requireLogout } from '../../store/slices/user-slice';
+
 import {
+  selectAuthorizationStatus,
   selectCity,
   selectIsOffersLoading,
   selectOffersByCity,
   selectOffersError,
+  selectUser,
 } from '../../store/selectors';
 
 import CitiesList from '../cities-list/cities-list';
@@ -15,10 +23,11 @@ import OfferList from '../OfferList/OfferList';
 import SortOptions, { SortType } from '../SortOptions/SortOptions';
 import Spinner from '../Spinner';
 
-import { useAppDispatch, useAppSelector } from '../../hooks';
-
 export default function MainPage(): JSX.Element {
   const dispatch = useAppDispatch();
+
+  const authorizationStatus = useAppSelector(selectAuthorizationStatus);
+  const user = useAppSelector(selectUser);
 
   const activeCity = useAppSelector(selectCity);
   const offers = useAppSelector(selectOffersByCity);
@@ -59,13 +68,20 @@ export default function MainPage(): JSX.Element {
 
   const zoom = sortedOffers.length > 0 ? sortedOffers[0].city.location.zoom : 12;
 
+  const handleLogout = (): void => {
+    dropToken();
+    dispatch(requireLogout());
+  };
+
+  const isAuth = authorizationStatus === AuthorizationStatus.Auth;
+
   return (
     <div className="page page--gray page--main">
       <header className="header">
         <div className="container">
           <div className="header__wrapper">
             <div className="header__left">
-              <a className="header__logo-link header__logo-link--active" href="/">
+              <Link className="header__logo-link header__logo-link--active" to="/">
                 <img
                   className="header__logo"
                   src="img/logo.svg"
@@ -73,15 +89,36 @@ export default function MainPage(): JSX.Element {
                   width={81}
                   height={41}
                 />
-              </a>
+              </Link>
             </div>
+
             <nav className="header__nav">
               <ul className="header__nav-list">
-                <li className="header__nav-item">
-                  <a className="header__nav-link" href="/login">
-                    <span className="header__signout">Sign in</span>
-                  </a>
-                </li>
+                {!isAuth ? (
+                  <li className="header__nav-item user">
+                    <Link className="header__nav-link header__nav-link--profile" to="/login">
+                      <span className="header__login">Sign in</span>
+                    </Link>
+                  </li>
+                ) : (
+                  <>
+                    <li className="header__nav-item user">
+                      <Link className="header__nav-link header__nav-link--profile" to="/favorites">
+                        <div className="header__avatar-wrapper user__avatar-wrapper">
+                          {user?.avatarUrl ? (
+                            <img src={user.avatarUrl} alt="avatar" width={20} height={20} />
+                          ) : null}
+                        </div>
+                        <span className="header__user-name user__name">{user?.email}</span>
+                      </Link>
+                    </li>
+                    <li className="header__nav-item">
+                      <button className="header__nav-link" type="button" onClick={handleLogout}>
+                        <span className="header__signout">Sign out</span>
+                      </button>
+                    </li>
+                  </>
+                )}
               </ul>
             </nav>
           </div>
@@ -127,12 +164,7 @@ export default function MainPage(): JSX.Element {
             <div className="cities__right-section">
               <section className="cities__map map">
                 {!isLoading && !error && (
-                  <Map
-                    offers={sortedOffers}
-                    center={mapCenter}
-                    zoom={zoom}
-                    activeOfferId={activeOfferId}
-                  />
+                  <Map offers={sortedOffers} center={mapCenter} zoom={zoom} activeOfferId={activeOfferId} />
                 )}
               </section>
             </div>

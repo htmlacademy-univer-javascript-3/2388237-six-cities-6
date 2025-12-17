@@ -13,3 +13,11 @@ export const selectOffersByCity = (state: RootState): Offer[] => {
 
 export const selectOfferById = (state: RootState, id: number): Offer | undefined =>
   selectOffers(state).find((offer) => offer.id === id);
+
+import { AuthorizationStatus } from '../const';
+import { UserData } from '../types/user';
+
+export const selectAuthorizationStatus = (state: RootState): AuthorizationStatus =>
+  state.user.authorizationStatus;
+
+export const selectUser = (state: RootState): UserData | null => state.user.user;

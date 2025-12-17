@@ -9,14 +9,14 @@ import NotFoundPage from './NotFoundPage/NotFoundPage';
 import PrivateRoute from './PrivateRoute/PrivateRoute';
 
 import { fetchOffersAction } from '../store/slices/offers-slice';
+import { checkAuthAction } from '../store/slices/user-slice';
 import { useAppDispatch } from '../hooks';
 
 export default function App(): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const isAuthorized = false;
-
   useEffect(() => {
+    dispatch(checkAuthAction());
     dispatch(fetchOffersAction());
   }, [dispatch]);
 
@@ -28,7 +28,7 @@ export default function App(): JSX.Element {
         <Route
           path="/favorites"
           element={
-            <PrivateRoute isAuthorized={isAuthorized}>
+            <PrivateRoute>
               <FavoritesPage />
             </PrivateRoute>
           }
