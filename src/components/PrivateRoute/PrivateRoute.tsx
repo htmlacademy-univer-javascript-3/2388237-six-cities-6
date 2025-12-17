@@ -1,16 +1,14 @@
 import { Navigate } from 'react-router-dom';
+import { AuthorizationStatus } from '../../const';
+import { useAppSelector } from '../../hooks';
+import { selectAuthorizationStatus } from '../../store/selectors';
 
 type PrivateRouteProps = {
   children: JSX.Element;
-  isAuthorized: boolean;
 };
 
-const PrivateRoute = ({ children, isAuthorized }: PrivateRouteProps) => {
-  if (!isAuthorized) {
-    // Если пользователь не авторизован — перенаправляем на логин
-    return <Navigate to="/login" replace />;
-  }
-  return children; // Иначе показываем защищённый контент
-};
+export default function PrivateRoute({ children }: PrivateRouteProps): JSX.Element {
+  const authorizationStatus = useAppSelector(selectAuthorizationStatus);
 
-export default PrivateRoute;
+  return authorizationStatus === AuthorizationStatus.Auth ? children : <Navigate to="/login" />;
+}
