@@ -106,4 +106,5 @@ function OfferCard({ offer, onHover }: OfferCardProps): JSX.Element {
   );
 }
 
-export default memo(OfferCard);
+const OfferCardMemo = memo(OfferCard);
+export default OfferCardMemo;

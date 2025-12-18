@@ -240,13 +240,13 @@ export default function OfferPage(): JSX.Element {
             </div>
           </section>
           <section className="offer__map map">
-          <Map
-            offers={mapOffers}
-            center={[offer.location.latitude, offer.location.longitude]}
-            zoom={offer.city.location.zoom}
-            activeOfferId={offer.id}
-          />
-        </section>
+            <Map
+              offers={mapOffers}
+              center={[offer.location.latitude, offer.location.longitude]}
+              zoom={offer.city.location.zoom}
+              activeOfferId={offer.id}
+            />
+          </section>
         </div>
       </main>
     </div>

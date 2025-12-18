@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Offer } from '../../types/offer';
+import type { Offer } from '../../types/offer';
 
 type PlaceCardProps = {
   offer: Offer;
@@ -13,4 +13,5 @@ function PlaceCard({ offer }: PlaceCardProps): JSX.Element {
   );
 }
 
-export default memo(PlaceCard);
+const PlaceCardMemo = memo(PlaceCard);
+export default PlaceCardMemo;
