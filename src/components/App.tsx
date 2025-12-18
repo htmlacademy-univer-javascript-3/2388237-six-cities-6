@@ -33,8 +33,10 @@ export default function App(): JSX.Element {
             </PrivateRoute>
           }
         />
+        <Route path="/404" element={<NotFoundPage />} />
         <Route path="/offer/:id" element={<OfferPage />} />
         <Route path="*" element={<NotFoundPage />} />
+
       </Routes>
     </BrowserRouter>
   );

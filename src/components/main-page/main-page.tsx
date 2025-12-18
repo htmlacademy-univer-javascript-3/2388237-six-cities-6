@@ -34,11 +34,11 @@ export default function MainPage(): JSX.Element {
   const isLoading = useAppSelector(selectIsOffersLoading);
   const error = useAppSelector(selectOffersError);
 
-  const [activeOfferId, setActiveOfferId] = useState<number | null>(null);
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
   const [sortType, setSortType] = useState<SortType>('popular');
 
   const sortedOffers = useMemo(() => {
-    const result = [...offers];
+    const result = offers.slice();
 
     switch (sortType) {
       case 'priceLowToHigh':
@@ -53,18 +53,22 @@ export default function MainPage(): JSX.Element {
     }
   }, [offers, sortType]);
 
-  const activeOffer = sortedOffers.find((o) => o.id === activeOfferId);
+  const activeOffer = useMemo(
+    () => sortedOffers.find((o) => o.id === activeOfferId) ?? null,
+    [sortedOffers, activeOfferId]
+  );
 
-  let mapCenter: [number, number] = [52.38333, 4.9];
-  if (sortedOffers.length > 0) {
-    mapCenter = [
-      sortedOffers[0].city.location.latitude,
-      sortedOffers[0].city.location.longitude,
-    ];
-  }
-  if (activeOffer) {
-    mapCenter = [activeOffer.location.latitude, activeOffer.location.longitude];
-  }
+  const mapCenter = useMemo<[number, number]>(() => {
+    if (activeOffer) {
+      return [activeOffer.location.latitude, activeOffer.location.longitude];
+    }
+
+    if (sortedOffers.length > 0) {
+      return [sortedOffers[0].city.location.latitude, sortedOffers[0].city.location.longitude];
+    }
+
+    return [52.38333, 4.9];
+  }, [activeOffer, sortedOffers]);
 
   const zoom = sortedOffers.length > 0 ? sortedOffers[0].city.location.zoom : 12;
 
@@ -164,7 +168,12 @@ export default function MainPage(): JSX.Element {
             <div className="cities__right-section">
               <section className="cities__map map">
                 {!isLoading && !error && (
-                  <Map offers={sortedOffers} center={mapCenter} zoom={zoom} activeOfferId={activeOfferId} />
+                  <Map
+                    offers={sortedOffers}
+                    center={mapCenter}
+                    zoom={zoom}
+                    activeOfferId={activeOfferId}
+                  />
                 )}
               </section>
             </div>

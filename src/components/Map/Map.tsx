@@ -8,7 +8,7 @@ type MapProps = {
   offers: Offer[];
   center: [number, number];
   zoom: number;
-  activeOfferId?: number | null;
+  activeOfferId?: string | null;
 };
 
 const defaultIcon = leaflet.icon({

@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { dropToken, getToken } from '../services/token';
+import { dropToken, getToken } from './token';
 
 export const DEFAULT_API_BASE_URL = 'https://14.design.htmlacademy.pro/six-cities';
 export const REQUEST_TIMEOUT = 5000;

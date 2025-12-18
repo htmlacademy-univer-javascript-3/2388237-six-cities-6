@@ -1,14 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import axios, { AxiosInstance } from 'axios';
+import type { AxiosInstance } from 'axios';
+
+import { createAPI } from '../services/api';
 import { rootReducer } from './root-reducer';
 
-const API_URL = 'https://14.design.htmlacademy.pro/six-cities';
-const TIMEOUT = 5000;
-
-export const api: AxiosInstance = axios.create({
-  baseURL: API_URL,
-  timeout: TIMEOUT,
-});
+export const api: AxiosInstance = createAPI();
 
 export const store = configureStore({
   reducer: rootReducer,

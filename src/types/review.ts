@@ -1,7 +1,7 @@
-import { UserData } from './user';
+import type { UserData } from './user';
 
 export type Review = {
-  id: number;
+  id: string;
   date: string;
   user: UserData;
   comment: string;

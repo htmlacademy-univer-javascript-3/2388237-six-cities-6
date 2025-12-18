@@ -1,13 +1,36 @@
-import { Link } from 'react-router-dom';
-import { Offer } from '../../types/offer';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { AuthorizationStatus } from '../../const';
+import { selectAuthorizationStatus } from '../../store/selectors';
+import { toggleFavoriteAction } from '../../store/slices/offers-slice';
+import type { Offer } from '../../types/offer';
 
 type OfferCardProps = {
   offer: Offer;
-  onHover?: (id: number | null) => void;
+  onHover?: (id: string | null) => void;
 };
 
 export default function OfferCard({ offer, onHover }: OfferCardProps): JSX.Element {
   const ratingWidth = `${Math.round(offer.rating) * 20}%`;
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const authorizationStatus = useAppSelector(selectAuthorizationStatus);
+  const isAuth = authorizationStatus === AuthorizationStatus.Auth;
+
+  const handleFavoriteClick = () => {
+    if (!isAuth) {
+      navigate('/login');
+      return;
+    }
+
+    dispatch(
+      toggleFavoriteAction({
+        offerId: offer.id,
+        status: offer.isFavorite ? 0 : 1,
+      })
+    );
+  };
 
   return (
     <article
@@ -23,7 +46,13 @@ export default function OfferCard({ offer, onHover }: OfferCardProps): JSX.Eleme
 
       <div className="cities__image-wrapper place-card__image-wrapper">
         <Link to={`/offer/${offer.id}`}>
-          <img className="place-card__image" src={offer.previewImage} width="260" height="200" alt={offer.title} />
+          <img
+            className="place-card__image"
+            src={offer.previewImage}
+            width="260"
+            height="200"
+            alt={offer.title}
+          />
         </Link>
       </div>
 
@@ -35,8 +64,11 @@ export default function OfferCard({ offer, onHover }: OfferCardProps): JSX.Eleme
           </div>
 
           <button
-            className={`place-card__bookmark-button button ${offer.isFavorite ? 'place-card__bookmark-button--active' : ''}`}
+            className={`place-card__bookmark-button button ${
+              offer.isFavorite ? 'place-card__bookmark-button--active' : ''
+            }`}
             type="button"
+            onClick={handleFavoriteClick}
           >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark" />

@@ -15,7 +15,10 @@ export enum AuthorizationStatus {
 
 export const APIRoute = {
   Login: '/login',
+  Offers: '/hotels',
+  Comments: '/comments',
 } as const;
+
 
 export const TokenName = 'six-cities-token';
 

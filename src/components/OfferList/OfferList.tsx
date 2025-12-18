@@ -1,9 +1,9 @@
-import { Offer } from '../../types/offer';
+import type { Offer } from '../../types/offer';
 import OfferCard from '../OfferCard/OfferCard';
 
 type OfferListProps = {
   offers: Offer[];
-  onOfferHover?: (id: number | null) => void;
+  onOfferHover?: (id: string | null) => void;
 };
 
 export default function OfferList({ offers, onOfferHover }: OfferListProps): JSX.Element {

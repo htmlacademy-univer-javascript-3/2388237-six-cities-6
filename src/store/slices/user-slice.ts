@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { AxiosInstance } from 'axios';
+import type { AxiosInstance } from 'axios';
 
 import { APIRoute, AuthorizationStatus } from '../../const';
-import { UserData } from '../../types/user';
+import type { UserData } from '../../types/user';
 import { saveToken } from '../../services/token';
 
 type UserState = {
@@ -27,12 +27,14 @@ export const checkAuthAction = createAsyncThunk<UserData, void, ThunkApiConfig>(
   }
 );
 
+type LoginResponse = UserData & { token: string };
+
 export const loginAction = createAsyncThunk<
   UserData,
   { email: string; password: string },
   ThunkApiConfig
 >('user/login', async ({ email, password }, { extra: api }) => {
-  const { data } = await api.post<UserData & { token: string }>(APIRoute.Login, { email, password });
+  const { data } = await api.post<LoginResponse>(APIRoute.Login, { email, password });
   saveToken(data.token);
   return data;
 });

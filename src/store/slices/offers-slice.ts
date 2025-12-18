@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosInstance } from 'axios';
-import { Offer } from '../../types/offer';
+import type { Offer } from '../../types/offer';
 import { CityName, DEFAULT_CITY } from '../../const';
 
 export type ThunkExtraArg = AxiosInstance;
@@ -27,6 +27,15 @@ export const fetchOffersAction = createAsyncThunk<Offer[], void, { extra: ThunkE
   }
 );
 
+export const toggleFavoriteAction = createAsyncThunk<
+  Offer,
+  { offerId: string; status: 0 | 1 },
+  { extra: ThunkExtraArg }
+>('offers/toggleFavorite', async ({ offerId, status }, { extra: api }) => {
+  const { data } = await api.post<Offer>(`/favorite/${offerId}/${status}`);
+  return data;
+});
+
 const offersSlice = createSlice({
   name: 'offers',
   initialState,
@@ -48,6 +57,10 @@ const offersSlice = createSlice({
       .addCase(fetchOffersAction.rejected, (state, action) => {
         state.isOffersLoading = false;
         state.offersError = action.error.message ?? 'Failed to load offers';
+      })
+      .addCase(toggleFavoriteAction.fulfilled, (state, action) => {
+        const updated = action.payload;
+        state.offers = state.offers.map((o) => (o.id === updated.id ? updated : o));
       });
   },
 });
