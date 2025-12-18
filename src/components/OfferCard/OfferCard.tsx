@@ -1,3 +1,4 @@
+import { memo, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { AuthorizationStatus } from '../../const';
@@ -10,15 +11,18 @@ type OfferCardProps = {
   onHover?: (id: string | null) => void;
 };
 
-export default function OfferCard({ offer, onHover }: OfferCardProps): JSX.Element {
-  const ratingWidth = `${Math.round(offer.rating) * 20}%`;
-
+function OfferCard({ offer, onHover }: OfferCardProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const authorizationStatus = useAppSelector(selectAuthorizationStatus);
   const isAuth = authorizationStatus === AuthorizationStatus.Auth;
 
-  const handleFavoriteClick = () => {
+  const ratingWidth = useMemo(
+    () => `${Math.round(offer.rating) * 20}%`,
+    [offer.rating]
+  );
+
+  const handleFavoriteClick = useCallback(() => {
     if (!isAuth) {
       navigate('/login');
       return;
@@ -30,13 +34,21 @@ export default function OfferCard({ offer, onHover }: OfferCardProps): JSX.Eleme
         status: offer.isFavorite ? 0 : 1,
       })
     );
-  };
+  }, [dispatch, isAuth, navigate, offer.id, offer.isFavorite]);
+
+  const handleMouseEnter = useCallback(() => {
+    onHover?.(offer.id);
+  }, [onHover, offer.id]);
+
+  const handleMouseLeave = useCallback(() => {
+    onHover?.(null);
+  }, [onHover]);
 
   return (
     <article
       className="cities__card place-card"
-      onMouseEnter={() => onHover?.(offer.id)}
-      onMouseLeave={() => onHover?.(null)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {offer.isPremium && (
         <div className="place-card__mark">
@@ -93,3 +105,5 @@ export default function OfferCard({ offer, onHover }: OfferCardProps): JSX.Eleme
     </article>
   );
 }
+
+export default memo(OfferCard);

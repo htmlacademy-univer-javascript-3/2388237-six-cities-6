@@ -59,8 +59,11 @@ const offersSlice = createSlice({
         state.offersError = action.error.message ?? 'Failed to load offers';
       })
       .addCase(toggleFavoriteAction.fulfilled, (state, action) => {
-        const updated = action.payload;
-        state.offers = state.offers.map((o) => (o.id === updated.id ? updated : o));
+        const updatedOffer = action.payload;
+        const index = state.offers.findIndex((o) => o.id === updatedOffer.id);
+        if (index !== -1) {
+          state.offers[index] = updatedOffer;
+        }
       });
   },
 });

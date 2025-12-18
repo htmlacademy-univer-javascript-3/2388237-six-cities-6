@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { AuthorizationStatus, CITIES, CityName } from '../../const';
@@ -9,10 +9,10 @@ import { changeCity } from '../../store/slices/offers-slice';
 import { requireLogout } from '../../store/slices/user-slice';
 
 import {
+  makeSelectSortedOffersByCity,
   selectAuthorizationStatus,
   selectCity,
   selectIsOffersLoading,
-  selectOffersByCity,
   selectOffersError,
   selectUser,
 } from '../../store/selectors';
@@ -30,31 +30,17 @@ export default function MainPage(): JSX.Element {
   const user = useAppSelector(selectUser);
 
   const activeCity = useAppSelector(selectCity);
-  const offers = useAppSelector(selectOffersByCity);
   const isLoading = useAppSelector(selectIsOffersLoading);
   const error = useAppSelector(selectOffersError);
 
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
   const [sortType, setSortType] = useState<SortType>('popular');
 
-  const sortedOffers = useMemo(() => {
-    const result = offers.slice();
-
-    switch (sortType) {
-      case 'priceLowToHigh':
-        return result.sort((a, b) => a.price - b.price);
-      case 'priceHighToLow':
-        return result.sort((a, b) => b.price - a.price);
-      case 'topRated':
-        return result.sort((a, b) => b.rating - a.rating);
-      case 'popular':
-      default:
-        return result;
-    }
-  }, [offers, sortType]);
+  const selectSortedOffers = useMemo(makeSelectSortedOffersByCity, []);
+  const sortedOffers = useAppSelector((state) => selectSortedOffers(state, sortType));
 
   const activeOffer = useMemo(
-    () => sortedOffers.find((o) => o.id === activeOfferId) ?? null,
+    () => sortedOffers.find((offer) => offer.id === activeOfferId) ?? null,
     [sortedOffers, activeOfferId]
   );
 
@@ -64,18 +50,39 @@ export default function MainPage(): JSX.Element {
     }
 
     if (sortedOffers.length > 0) {
-      return [sortedOffers[0].city.location.latitude, sortedOffers[0].city.location.longitude];
+      return [
+        sortedOffers[0].city.location.latitude,
+        sortedOffers[0].city.location.longitude,
+      ];
     }
 
     return [52.38333, 4.9];
   }, [activeOffer, sortedOffers]);
 
-  const zoom = sortedOffers.length > 0 ? sortedOffers[0].city.location.zoom : 12;
+  const zoom = useMemo(
+    () => (sortedOffers.length > 0 ? sortedOffers[0].city.location.zoom : 12),
+    [sortedOffers]
+  );
 
-  const handleLogout = (): void => {
+  const handleCityClick = useCallback(
+    (city: CityName) => {
+      dispatch(changeCity(city));
+    },
+    [dispatch]
+  );
+
+  const handleOfferHover = useCallback((id: string | null) => {
+    setActiveOfferId(id);
+  }, []);
+
+  const handleSortChange = useCallback((type: SortType) => {
+    setSortType(type);
+  }, []);
+
+  const handleLogout = useCallback(() => {
     dropToken();
     dispatch(requireLogout());
-  };
+  }, [dispatch]);
 
   const isAuth = authorizationStatus === AuthorizationStatus.Auth;
 
@@ -133,11 +140,7 @@ export default function MainPage(): JSX.Element {
         <h1 className="visually-hidden">Cities</h1>
 
         <div className="tabs">
-          <CitiesList
-            cities={CITIES}
-            activeCity={activeCity}
-            onCityClick={(city: CityName) => dispatch(changeCity(city))}
-          />
+          <CitiesList cities={CITIES} activeCity={activeCity} onCityClick={handleCityClick} />
         </div>
 
         <div className="cities">
@@ -159,8 +162,8 @@ export default function MainPage(): JSX.Element {
                     {sortedOffers.length} places to stay in {activeCity}
                   </b>
 
-                  <SortOptions sortType={sortType} onSortChange={setSortType} />
-                  <OfferList offers={sortedOffers} onOfferHover={setActiveOfferId} />
+                  <SortOptions sortType={sortType} onSortChange={handleSortChange} />
+                  <OfferList offers={sortedOffers} onOfferHover={handleOfferHover} />
                 </>
               )}
             </section>
