@@ -16,7 +16,6 @@ const initialState: OffersState = {
   error: null,
 };
 
-// Thunk для загрузки офферов
 export const fetchOffers = createAsyncThunk<Offer[], undefined, { extra: AxiosInstance }>(
   'offers/fetchOffers',
   async (_, { extra: api }) => {
