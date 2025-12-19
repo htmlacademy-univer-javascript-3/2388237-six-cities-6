@@ -2,7 +2,8 @@ import { memo, useEffect, useMemo, useRef } from 'react';
 import leaflet, { Map as LeafletMap, Marker } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-import { Offer } from '../../types/offer';
+import type { Offer } from '../../types/offer';
+import { activeIcon, defaultIcon } from './map-icons';
 
 type MapProps = {
   offers: Offer[];
@@ -11,19 +12,7 @@ type MapProps = {
   activeOfferId?: string | null;
 };
 
-const defaultIcon = leaflet.icon({
-  iconUrl: 'img/pin.svg',
-  iconSize: [27, 39],
-  iconAnchor: [13, 39],
-});
-
-const activeIcon = leaflet.icon({
-  iconUrl: 'img/pin-active.svg',
-  iconSize: [27, 39],
-  iconAnchor: [13, 39],
-});
-
-function Map({ offers, center, zoom, activeOfferId = null }: MapProps): JSX.Element {
+function MapComponent({ offers, center, zoom, activeOfferId = null }: MapProps): JSX.Element {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<LeafletMap | null>(null);
   const markersRef = useRef<Marker[]>([]);
@@ -47,7 +36,7 @@ function Map({ offers, center, zoom, activeOfferId = null }: MapProps): JSX.Elem
       map.remove();
       mapInstanceRef.current = null;
     };
-  }, []);
+  }, [center, zoom]);
 
   useEffect(() => {
     const map = mapInstanceRef.current;
@@ -93,4 +82,5 @@ function Map({ offers, center, zoom, activeOfferId = null }: MapProps): JSX.Elem
   return <div ref={mapRef} style={{ height: '100%' }} />;
 }
 
-export default memo(Map);
+const Map = memo(MapComponent);
+export default Map;

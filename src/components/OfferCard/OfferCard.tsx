@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { AuthorizationStatus } from '../../const';
 import { selectAuthorizationStatus } from '../../store/selectors';
-import { toggleFavoriteAction } from '../../store/slices/offers-slice';
+import { fetchFavoritesAction, toggleFavoriteAction } from '../../store/slices/offers-slice';
 import type { Offer } from '../../types/offer';
 
 type OfferCardProps = {
@@ -14,13 +14,11 @@ type OfferCardProps = {
 function OfferCard({ offer, onHover }: OfferCardProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
   const authorizationStatus = useAppSelector(selectAuthorizationStatus);
   const isAuth = authorizationStatus === AuthorizationStatus.Auth;
 
-  const ratingWidth = useMemo(
-    () => `${Math.round(offer.rating) * 20}%`,
-    [offer.rating]
-  );
+  const ratingWidth = useMemo(() => `${Math.round(offer.rating) * 20}%`, [offer.rating]);
 
   const handleFavoriteClick = useCallback(() => {
     if (!isAuth) {
@@ -33,7 +31,9 @@ function OfferCard({ offer, onHover }: OfferCardProps): JSX.Element {
         offerId: offer.id,
         status: offer.isFavorite ? 0 : 1,
       })
-    );
+    )
+      .unwrap()
+      .then(() => dispatch(fetchFavoritesAction()));
   }, [dispatch, isAuth, navigate, offer.id, offer.isFavorite]);
 
   const handleMouseEnter = useCallback(() => {
@@ -106,4 +106,5 @@ function OfferCard({ offer, onHover }: OfferCardProps): JSX.Element {
   );
 }
 
-export default memo(OfferCard);
+const MemoizedOfferCard = memo(OfferCard);
+export default MemoizedOfferCard;
