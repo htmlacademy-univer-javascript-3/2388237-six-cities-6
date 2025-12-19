@@ -8,5 +8,3 @@ export const rootReducer = combineReducers({
   user: userReducer,
   offerPage: offerPageReducer,
 });
-
-export type RootState = ReturnType<typeof rootReducer>;
