@@ -1,6 +1,10 @@
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
+
+import { Provider } from 'react-redux';
+import { store } from '../../store';
 
 vi.mock('../../pages/main/main', () => ({
   default: () => <div>MAIN_PAGE</div>,
@@ -23,9 +27,11 @@ import App from '../App';
 describe('App routing', () => {
   it('renders Main page on "/"', () => {
     render(
-      <MemoryRouter initialEntries={['/']}>
-        <App />
-      </MemoryRouter>
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/']}>
+          <App />
+        </MemoryRouter>
+      </Provider>
     );
 
     expect(screen.getByText('MAIN_PAGE')).toBeInTheDocument();

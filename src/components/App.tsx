@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import MainPage from './main-page/main-page';
 import LoginPage from './LoginPage/LoginPage';
@@ -21,23 +21,20 @@ export default function App(): JSX.Element {
   }, [dispatch]);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/favorites"
-          element={
-            <PrivateRoute>
-              <FavoritesPage />
-            </PrivateRoute>
-          }
-        />
-        <Route path="/404" element={<NotFoundPage />} />
-        <Route path="/offer/:id" element={<OfferPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<MainPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/favorites"
+        element={
+          <PrivateRoute>
+            <FavoritesPage />
+          </PrivateRoute>
+        }
+      />
+      <Route path="/offer/:id" element={<OfferPage />} />
+      <Route path="/404" element={<NotFoundPage />} />
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
   );
 }

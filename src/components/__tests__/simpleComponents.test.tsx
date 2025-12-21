@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 
 import Spinner from '../Spinner';
 import FavoritesEmptyPage from '../FavoritesEmptyPage/FavoritesEmptyPage';
@@ -9,7 +10,7 @@ import Review from '../Reviews/Review';
 describe('Simple components render', () => {
   it('Spinner renders', () => {
     render(<Spinner />);
-    expect(screen.getByTestId('spinner')).toBeInTheDocument();
+    expect(screen.getByRole('img')).toBeInTheDocument();
   });
 
   it('FavoritesEmptyPage renders', () => {
@@ -18,7 +19,12 @@ describe('Simple components render', () => {
   });
 
   it('NotFoundPage renders', () => {
-    render(<NotFoundPage />);
+    render(
+      <MemoryRouter>
+        <NotFoundPage />
+      </MemoryRouter>
+    );
+
     expect(screen.getByText(/404/i)).toBeInTheDocument();
   });
 
@@ -28,8 +34,8 @@ describe('Simple components render', () => {
         review={{
           id: '1',
           comment: 'Nice place',
-          rating: 4,
           date: '2020-01-01',
+          rating: 4,
           user: {
             id: 1,
             name: 'John',
@@ -40,7 +46,7 @@ describe('Simple components render', () => {
       />
     );
 
-    expect(screen.getByText('Nice!')).toBeInTheDocument();
+    expect(screen.getByText('Nice place')).toBeInTheDocument();
     expect(screen.getByText('John')).toBeInTheDocument();
   });
 });
