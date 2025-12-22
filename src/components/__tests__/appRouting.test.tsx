@@ -1,59 +1,36 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-
 import { Provider } from 'react-redux';
-import { store } from '../../store';
-
-vi.mock('../../pages/main/main', () => ({
-  default: () => <div>MAIN_PAGE</div>,
-}));
-
-vi.mock('../../pages/login/login', () => ({
-  default: () => <div>LOGIN_PAGE</div>,
-}));
-
-vi.mock('../../pages/favorites/favorites', () => ({
-  default: () => <div>FAVORITES_PAGE</div>,
-}));
-
-vi.mock('../../pages/not-found/not-found', () => ({
-  default: () => <div>NOT_FOUND_PAGE</div>,
-}));
 
 import App from '../App';
+import { store } from '../../store';
+
+const renderApp = (route: string) =>
+  render(
+    <Provider store={store}>
+      <MemoryRouter initialEntries={[route]}>
+        <App />
+      </MemoryRouter>
+    </Provider>
+  );
 
 describe('App routing', () => {
-  it('renders Main page on "/"', () => {
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={['/']}>
-          <App />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('should render Main page when user navigate to "/"', () => {
+    renderApp('/');
 
-    expect(screen.getByText('MAIN_PAGE')).toBeInTheDocument();
+    expect(screen.getByText('Paris')).toBeInTheDocument();
   });
 
-  it('renders Login page on "/login"', () => {
-    render(
-      <MemoryRouter initialEntries={['/login']}>
-        <App />
-      </MemoryRouter>
-    );
+  it('should render Login page when user navigate to "/login"', () => {
+    renderApp('/login');
 
-    expect(screen.getByText('LOGIN_PAGE')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /sign in/i })).toBeInTheDocument();
   });
 
-  it('renders NotFound page on unknown route', () => {
-    render(
-      <MemoryRouter initialEntries={['/unknown-route']}>
-        <App />
-      </MemoryRouter>
-    );
+  it('should render NotFound page when user navigate to unknown route', () => {
+    renderApp('/unknown-route');
 
-    expect(screen.getByText('NOT_FOUND_PAGE')).toBeInTheDocument();
+    expect(screen.getByText(/404 not found/i)).toBeInTheDocument();
   });
 });
