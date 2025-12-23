@@ -9,9 +9,10 @@ import type { Offer } from '../../types/offer';
 type OfferCardProps = {
   offer: Offer;
   onHover?: (id: string | null) => void;
+  variant?: 'cities' | 'near';
 };
 
-function OfferCard({ offer, onHover }: OfferCardProps): JSX.Element {
+function OfferCard({ offer, onHover, variant = 'cities' }: OfferCardProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -46,7 +47,7 @@ function OfferCard({ offer, onHover }: OfferCardProps): JSX.Element {
 
   return (
     <article
-      className="cities__card place-card"
+      className={`${variant === 'near' ? 'near-places__card place-card' : 'cities__card place-card'}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -56,13 +57,15 @@ function OfferCard({ offer, onHover }: OfferCardProps): JSX.Element {
         </div>
       )}
 
-      <div className="cities__image-wrapper place-card__image-wrapper">
+      <div
+        className={`${variant === 'near' ? 'near-places__image-wrapper place-card__image-wrapper' : 'cities__image-wrapper place-card__image-wrapper'}`}
+      >
         <Link to={`/offer/${offer.id}`}>
           <img
             className="place-card__image"
             src={offer.previewImage}
-            width="260"
-            height="200"
+            width={variant === 'near' ? 260 : 260}
+            height={variant === 'near' ? 200 : 200}
             alt={offer.title}
           />
         </Link>

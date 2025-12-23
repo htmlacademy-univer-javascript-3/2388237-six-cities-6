@@ -4,6 +4,18 @@ import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
 import App from '../App';
+
+vi.mock('../Header/Header', () => ({
+  default: () => null,
+}));
+
+vi.mock('../Map/Map', () => ({
+  default: () => null,
+}));
+
+vi.mock('../ServerUnavailableBanner/ServerUnavailableBanner', () => ({
+  default: () => null,
+}));
 import { store } from '../../store';
 
 const renderApp = (route: string) =>

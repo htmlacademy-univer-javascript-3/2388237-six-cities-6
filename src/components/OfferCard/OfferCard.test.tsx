@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { AuthorizationStatus } from '../../const';
 import type { Offer } from '../../types/offer';
-import OfferCard from '../OfferCard/OfferCard';
+import OfferCard from './OfferCard';
 
 type Selector = (state: unknown) => unknown;
 

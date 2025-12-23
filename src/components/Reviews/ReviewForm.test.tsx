@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import { AuthorizationStatus } from '../../const';
-import ReviewForm from '../Reviews/ReviewForm';
+import ReviewForm from './ReviewForm';
 import { postReviewAction } from '../../store/slices/offer-page-slice';
 import {
   selectAuthorizationStatus,

@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AxiosInstance } from 'axios';
 import type { Offer } from '../../types/offer';
-import { CityName, DEFAULT_CITY } from '../../const';
+import { APIRoute, CityName, DEFAULT_CITY } from '../../const';
+import { logoutAction, requireLogout } from './user-slice';
 
 export type ThunkExtraArg = AxiosInstance;
 
@@ -29,30 +30,28 @@ const initialState: OffersState = {
   favoritesError: null,
 };
 
-export const fetchOffersAction = createAsyncThunk<
-  Offer[],
-  void,
-  { extra: ThunkExtraArg }
->('offers/fetchOffers', async (_arg, { extra: api }) => {
-  const { data } = await api.get<Offer[]>('/offers');
-  return data;
-});
+export const fetchOffersAction = createAsyncThunk<Offer[], void, { extra: ThunkExtraArg }>(
+  'offers/fetchOffers',
+  async (_arg, { extra: api }) => {
+    const { data } = await api.get<Offer[]>(APIRoute.Offers);
+    return data;
+  }
+);
 
-export const fetchFavoritesAction = createAsyncThunk<
-  Offer[],
-  void,
-  { extra: ThunkExtraArg }
->('offers/fetchFavorites', async (_arg, { extra: api }) => {
-  const { data } = await api.get<Offer[]>('/favorite');
-  return data;
-});
+export const fetchFavoritesAction = createAsyncThunk<Offer[], void, { extra: ThunkExtraArg }>(
+  'offers/fetchFavorites',
+  async (_arg, { extra: api }) => {
+    const { data } = await api.get<Offer[]>(APIRoute.Favorite);
+    return data;
+  }
+);
 
 export const toggleFavoriteAction = createAsyncThunk<
   Offer,
   { offerId: string; status: 0 | 1 },
   { extra: ThunkExtraArg }
 >('offers/toggleFavorite', async ({ offerId, status }, { extra: api }) => {
-  const { data } = await api.post<Offer>(`/favorite/${offerId}/${status}`);
+  const { data } = await api.post<Offer>(`${APIRoute.Favorite}/${offerId}/${status}`);
   return data;
 });
 
@@ -66,6 +65,15 @@ const offersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(requireLogout, (state) => {
+        state.favorites = [];
+      })
+      .addCase(logoutAction.fulfilled, (state) => {
+        state.favorites = [];
+      })
+      .addCase(logoutAction.rejected, (state) => {
+        state.favorites = [];
+      })
 
       .addCase(fetchOffersAction.pending, (state) => {
         state.isOffersLoading = true;

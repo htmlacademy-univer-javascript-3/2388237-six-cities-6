@@ -1,8 +1,10 @@
 import { useEffect, useMemo } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
+import Header from '../Header/Header';
 import Map from '../Map/Map';
-import ReviewForm from '../../components/Reviews/ReviewForm';
+import ReviewForm from '../Reviews/ReviewForm';
+import OfferCard from '../OfferCard/OfferCard';
 
 import { AuthorizationStatus } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
@@ -12,20 +14,30 @@ import type { Review } from '../../types/review';
 
 import {
   selectAuthorizationStatus,
-  selectOfferPageOffer,
-  selectOfferPageNearby,
-  selectOfferPageReviews,
   selectOfferPageLoading,
+  selectOfferPageNearby,
   selectOfferPageNotFound,
+  selectOfferPageOffer,
+  selectOfferPageReviews,
 } from '../../store/selectors';
 
 import { toggleFavoriteAction } from '../../store/slices/offers-slice';
 import {
-  fetchOfferByIdAction,
-  fetchNearbyOffersAction,
   fetchCommentsAction,
+  fetchNearbyOffersAction,
+  fetchOfferByIdAction,
   resetOfferPage,
 } from '../../store/slices/offer-page-slice';
+
+const typeLabelMap: Record<string, string> = {
+  apartment: 'Apartment',
+  room: 'Room',
+  house: 'House',
+  hotel: 'Hotel',
+};
+
+const pluralize = (count: number, one: string, many: string): string =>
+  count === 1 ? one : many;
 
 export default function OfferPage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
@@ -92,18 +104,31 @@ export default function OfferPage(): JSX.Element {
   }
 
   if (isLoading || !offer) {
-    return <div>Loading...</div>;
+    return (
+      <div className="page">
+        <Header />
+        <main className="page__main page__main--offer" style={{ padding: 24 }}>
+          Loading...
+        </main>
+      </div>
+    );
   }
+
+  const typeLabel = typeLabelMap[offer.type] ?? offer.type;
+  const bedrooms = typeof offer.bedrooms === 'number' ? offer.bedrooms : 0;
+  const maxAdults = typeof offer.maxAdults === 'number' ? offer.maxAdults : 0;
 
   return (
     <div className="page">
+      <Header />
+
       <main className="page__main page__main--offer">
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
               {(offer.images ?? []).slice(0, 6).map((src) => (
                 <div className="offer__image-wrapper" key={src}>
-                  <img className="offer__image" src={src} alt="Photo studio" />
+                  <img className="offer__image" src={src} alt={offer.title} />
                 </div>
               ))}
             </div>
@@ -139,23 +164,21 @@ export default function OfferPage(): JSX.Element {
                   <span style={{ width: `${Math.round(offer.rating) * 20}%` }} />
                   <span className="visually-hidden">Rating</span>
                 </div>
-                <span className="offer__rating-value rating__value">{offer.rating}</span>
+                <span className="offer__rating-value rating__value">{offer.rating.toFixed(1)}</span>
               </div>
 
               <ul className="offer__features">
-                <li className="offer__feature offer__feature--entire">{offer.type}</li>
-
-                {typeof offer.bedrooms === 'number' ? (
+                <li className="offer__feature offer__feature--entire">{typeLabel}</li>
+                {bedrooms > 0 && (
                   <li className="offer__feature offer__feature--bedrooms">
-                    {offer.bedrooms} Bedrooms
+                    {bedrooms} {pluralize(bedrooms, 'Bedroom', 'Bedrooms')}
                   </li>
-                ) : null}
-
-                {typeof offer.maxAdults === 'number' ? (
+                )}
+                {maxAdults > 0 && (
                   <li className="offer__feature offer__feature--adults">
-                    Max {offer.maxAdults} adults
+                    Max {maxAdults} {pluralize(maxAdults, 'adult', 'adults')}
                   </li>
-                ) : null}
+                )}
               </ul>
 
               <div className="offer__price">
@@ -176,11 +199,26 @@ export default function OfferPage(): JSX.Element {
                 </div>
               ) : null}
 
-              {offer.description ? (
-                <div className="offer__description">
-                  <p className="offer__text">{offer.description}</p>
+              <div className="offer__host">
+                <h2 className="offer__host-title">Meet the host</h2>
+
+                <div className="offer__host-user user">
+                  <div className={`offer__avatar-wrapper user__avatar-wrapper ${offer.host.isPro ? 'offer__avatar-wrapper--pro' : ''}`}>
+                    <img
+                      className="offer__avatar user__avatar"
+                      src={offer.host.avatarUrl}
+                      width="74"
+                      height="74"
+                      alt="Host avatar"
+                    />
+                  </div>
+
+                  <span className="offer__user-name">{offer.host.name}</span>
+                  {offer.host.isPro ? <span className="offer__user-status">Pro</span> : null}
                 </div>
-              ) : null}
+
+                {offer.description ? <p className="offer__text">{offer.description}</p> : null}
+              </div>
 
               <section className="offer__reviews reviews">
                 <h2 className="reviews__title">
@@ -231,14 +269,6 @@ export default function OfferPage(): JSX.Element {
         </section>
 
         <div className="container">
-          <section className="near-places places">
-            <h2 className="near-places__title">Other places in the neighbourhood</h2>
-            <div className="near-places__list places__list">
-              {nearby.slice(0, 3).map((o) => (
-                <div key={o.id}>{o.title}</div>
-              ))}
-            </div>
-          </section>
           <section className="offer__map map">
             <Map
               offers={mapOffers}
@@ -246,6 +276,15 @@ export default function OfferPage(): JSX.Element {
               zoom={offer.city.location.zoom}
               activeOfferId={offer.id}
             />
+          </section>
+
+          <section className="near-places places">
+            <h2 className="near-places__title">Other places in the neighbourhood</h2>
+            <div className="near-places__list places__list">
+              {nearby.slice(0, 3).map((o) => (
+                <OfferCard key={o.id} offer={o} variant="near" />
+              ))}
+            </div>
           </section>
         </div>
       </main>

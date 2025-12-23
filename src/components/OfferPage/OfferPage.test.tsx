@@ -3,7 +3,15 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 
-import OfferPage from '../OfferPage/OfferPage';
+import OfferPage from './OfferPage';
+
+vi.mock('../Header/Header', () => ({
+  default: () => null,
+}));
+
+vi.mock('../Map/Map', () => ({
+  default: () => null,
+}));
 import { AuthorizationStatus } from '../../const';
 import type { Offer } from '../../types/offer';
 import type { Review } from '../../types/review';
