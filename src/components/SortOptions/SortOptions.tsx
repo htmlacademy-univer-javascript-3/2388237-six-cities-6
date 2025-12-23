@@ -1,16 +1,9 @@
-export type SortType = 'popular' | 'priceLowToHigh' | 'priceHighToLow' | 'topRated';
+import { SORT_LABELS, SortType } from '../../const';
 
 interface SortOptionsProps {
   sortType: SortType;
   onSortChange: (sort: SortType) => void;
 }
-
-const SORT_LABELS: Record<SortType, string> = {
-  popular: 'Popular',
-  priceLowToHigh: 'Price: low to high',
-  priceHighToLow: 'Price: high to low',
-  topRated: 'Top rated first',
-};
 
 export default function SortOptions({ sortType, onSortChange }: SortOptionsProps) {
   return (
@@ -22,17 +15,22 @@ export default function SortOptions({ sortType, onSortChange }: SortOptionsProps
           <use xlinkHref="#icon-arrow-select"></use>
         </svg>
       </span>
+
       <ul className="places__options places__options--custom places__options--opened">
-        {Object.entries(SORT_LABELS).map(([key, label]) => (
-          <li
-            key={key}
-            className={`places__option ${sortType === key ? 'places__option--active' : ''}`}
-            tabIndex={0}
-            onClick={() => onSortChange(key as SortType)}
-          >
-            {label}
-          </li>
-        ))}
+        {Object.entries(SORT_LABELS).map(([key, label]) => {
+          const typedKey = key as SortType;
+
+          return (
+            <li
+              key={typedKey}
+              className={`places__option ${sortType === typedKey ? 'places__option--active' : ''}`}
+              tabIndex={0}
+              onClick={() => onSortChange(typedKey)}
+            >
+              {label}
+            </li>
+          );
+        })}
       </ul>
     </form>
   );

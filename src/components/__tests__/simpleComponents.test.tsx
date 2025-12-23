@@ -1,11 +1,15 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 
 import Spinner from '../Spinner';
 import FavoritesEmptyPage from '../FavoritesEmptyPage/FavoritesEmptyPage';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
 import Review from '../Reviews/Review';
+
+vi.mock('../Header/Header', () => ({
+  default: () => null,
+}));
 
 describe('Simple components render', () => {
   it('Spinner renders', () => {

@@ -1,10 +1,12 @@
-import { FormEvent, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { FormEvent, useMemo, useState } from 'react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 
-import { AuthorizationStatus } from '../../const';
+import Header from '../Header/Header';
+import { AuthorizationStatus, CITIES, CityName } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { loginAction } from '../../store/slices/user-slice';
 import { selectAuthorizationStatus } from '../../store/selectors';
+import { changeCity } from '../../store/slices/offers-slice';
 
 export default function LoginPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -14,6 +16,11 @@ export default function LoginPage(): JSX.Element {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const randomCity = useMemo<CityName>(() => {
+    const idx = Math.floor(Math.random() * CITIES.length);
+    return CITIES[idx];
+  }, []);
 
   if (authorizationStatus === AuthorizationStatus.Auth) {
     return <Navigate to="/" />;
@@ -32,6 +39,8 @@ export default function LoginPage(): JSX.Element {
 
   return (
     <div className="page page--gray page--login">
+      <Header logoLinkActive={false} />
+
       <main className="page__main page__main--login">
         <div className="page__login-container container">
           <section className="login">
@@ -58,6 +67,7 @@ export default function LoginPage(): JSX.Element {
                   type="password"
                   name="password"
                   placeholder="Password"
+                  pattern="(?=.*[0-9])(?=.*[A-Za-z]).*"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -68,6 +78,18 @@ export default function LoginPage(): JSX.Element {
                 Sign in
               </button>
             </form>
+          </section>
+
+          <section className="locations locations--login locations--current">
+            <div className="locations__item">
+              <Link
+                className="locations__item-link"
+                to="/"
+                onClick={() => dispatch(changeCity(randomCity))}
+              >
+                <span>{randomCity}</span>
+              </Link>
+            </div>
           </section>
         </div>
       </main>

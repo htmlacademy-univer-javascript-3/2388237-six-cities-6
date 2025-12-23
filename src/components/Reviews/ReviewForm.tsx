@@ -17,6 +17,7 @@ export default function ReviewForm({ offerId }: ReviewFormProps): JSX.Element | 
 
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const isValid = useMemo(() => {
     const len = comment.trim().length;
@@ -34,12 +35,15 @@ export default function ReviewForm({ offerId }: ReviewFormProps): JSX.Element | 
       return;
     }
 
+    setErrorMessage(null);
+
     void (async () => {
       const result = await dispatch(
         postReviewAction({ offerId, comment: comment.trim(), rating })
       );
 
       if (!postReviewAction.fulfilled.match(result)) {
+        setErrorMessage('Could not submit the review. Please try again.');
         return;
       }
 
@@ -91,6 +95,11 @@ export default function ReviewForm({ offerId }: ReviewFormProps): JSX.Element | 
       />
 
       <div className="reviews__button-wrapper">
+        {errorMessage ? (
+          <p className="reviews__help" style={{ color: 'crimson' }}>
+            {errorMessage}
+          </p>
+        ) : null}
         <p className="reviews__help">
           To submit review please make sure to set rating and describe your stay with at least 50 characters.
         </p>

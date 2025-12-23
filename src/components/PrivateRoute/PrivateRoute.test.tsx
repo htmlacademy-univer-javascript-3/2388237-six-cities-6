@@ -3,7 +3,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 
 import { AuthorizationStatus } from '../../const';
-import PrivateRoute from '../PrivateRoute/PrivateRoute';
+import PrivateRoute from './PrivateRoute';
 
 vi.mock('../../hooks', () => ({
   useAppSelector: vi.fn(),

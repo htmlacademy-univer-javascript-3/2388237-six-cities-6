@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { CityName } from '../../const';
-import CitiesList from '../cities-list/cities-list';
+import CitiesList from './cities-list';
 
 describe('Component: CitiesList', () => {
   it('should call onCityClick on link click', async () => {
