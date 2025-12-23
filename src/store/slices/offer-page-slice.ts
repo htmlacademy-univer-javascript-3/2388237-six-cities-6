@@ -136,3 +136,4 @@ const offerPageSlice = createSlice({
 
 export const { resetOfferPage } = offerPageSlice.actions;
 export default offerPageSlice.reducer;
+
