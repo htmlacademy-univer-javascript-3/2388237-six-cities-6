@@ -42,7 +42,8 @@ src/components/ServerUnavailableBanner
 src/components/ServerUnavailableBanner/ServerUnavailableBanner.tsx
 src/components/SortOptions
 src/components/SortOptions/SortOptions.tsx
-src/components/Spinner.tsx
+src/components/Spinner/Spinner.tsx
+src/components/Spinner/Spinner.test.tsx
 src/components/__tests__
 src/components/__tests__/appRouting.test.tsx
 src/components/__tests__/citiesList.test.tsx
@@ -69,11 +70,7 @@ src/services/api.ts
 src/services/token.ts
 src/setupTests.ts
 src/store
-src/store/favoritesActions.ts
 src/store/index.ts
-src/store/offersReducer.ts
-src/store/reducer.ts
-src/store/reviewsActions.ts
 src/store/root-reducer.ts
 src/store/selectors.ts
 src/store/slices
@@ -92,4 +89,3 @@ src/types/offer.ts
 src/types/review.ts
 src/types/store.ts
 src/types/user.ts
-src/types.ts
