@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 
-import Spinner from '../Spinner';
+import Spinner from '../Spinner/Spinner';
 import FavoritesEmptyPage from '../FavoritesEmptyPage/FavoritesEmptyPage';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
 import Review from '../Reviews/Review';

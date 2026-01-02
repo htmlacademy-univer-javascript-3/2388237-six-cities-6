@@ -3,6 +3,7 @@ type SpinnerProps = { label?: string };
 export default function Spinner({ label = 'Loading...' }: SpinnerProps): JSX.Element {
   return (
     <div
+      data-testid="spinner"
       style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
       aria-live="polite"
       aria-busy="true"
