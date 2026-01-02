@@ -3,7 +3,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CITIES, CityName } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 
-import { changeCity, fetchFavoritesAction } from '../../store/slices/offers-slice';
+import {
+  changeCity,
+  fetchFavoritesAction,
+} from '../../store/slices/offers-slice';
 import {
   makeSelectSortedOffersByCity,
   selectAuthorizationStatus,
@@ -19,7 +22,7 @@ import Map from '../Map/Map';
 import OfferList from '../OfferList/OfferList';
 import { SortType } from '../../const';
 import SortOptions from '../SortOptions/SortOptions';
-import Spinner from '../Spinner';
+import Spinner from '../Spinner/Spinner';
 import { MainEmptyPage } from '../MainEmptyPage/MainEmptyPage';
 
 export default function MainPage(): JSX.Element {
@@ -40,7 +43,9 @@ export default function MainPage(): JSX.Element {
   const [sortType, setSortType] = useState<SortType>(SortType.Popular);
 
   const selectSortedOffers = useMemo(makeSelectSortedOffersByCity, []);
-  const sortedOffers = useAppSelector((state) => selectSortedOffers(state, sortType));
+  const sortedOffers = useAppSelector((state) =>
+    selectSortedOffers(state, sortType)
+  );
 
   const activeOffer = useMemo(
     () => sortedOffers.find((offer) => offer.id === activeOfferId) ?? null,
@@ -54,14 +59,18 @@ export default function MainPage(): JSX.Element {
       return [activeOffer.location.latitude, activeOffer.location.longitude];
     }
     if (sortedOffers.length > 0) {
-      return [sortedOffers[0].city.location.latitude, sortedOffers[0].city.location.longitude];
+      return [
+        sortedOffers[0].city.location.latitude,
+        sortedOffers[0].city.location.longitude,
+      ];
     }
     return [52.38333, 4.9];
   }, [activeOffer, sortedOffers]);
 
-  const zoom = useMemo(() => (sortedOffers.length > 0 ? sortedOffers[0].city.location.zoom : 12), [
-    sortedOffers,
-  ]);
+  const zoom = useMemo(
+    () => (sortedOffers.length > 0 ? sortedOffers[0].city.location.zoom : 12),
+    [sortedOffers]
+  );
 
   const handleCityClick = useCallback(
     (city: CityName) => {
@@ -83,11 +92,19 @@ export default function MainPage(): JSX.Element {
     <div className="page page--gray page--main">
       <Header />
 
-      <main className={`page__main page__main--index ${isEmpty ? 'page__main--index-empty' : ''}`}>
+      <main
+        className={`page__main page__main--index ${
+          isEmpty ? 'page__main--index-empty' : ''
+        }`}
+      >
         <h1 className="visually-hidden">Cities</h1>
 
         <div className="tabs">
-          <CitiesList cities={CITIES} activeCity={activeCity} onCityClick={handleCityClick} />
+          <CitiesList
+            cities={CITIES}
+            activeCity={activeCity}
+            onCityClick={handleCityClick}
+          />
         </div>
 
         <div className="cities">
@@ -115,7 +132,11 @@ export default function MainPage(): JSX.Element {
                     <img
                       src="img/no-places.png"
                       alt="No places"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
                     />
                   </section>
                 </div>
@@ -131,13 +152,24 @@ export default function MainPage(): JSX.Element {
                     {sortedOffers.length} places to stay in {activeCity}
                   </b>
 
-                  <SortOptions sortType={sortType} onSortChange={handleSortChange} />
-                  <OfferList offers={sortedOffers} onOfferHover={handleOfferHover} />
+                  <SortOptions
+                    sortType={sortType}
+                    onSortChange={handleSortChange}
+                  />
+                  <OfferList
+                    offers={sortedOffers}
+                    onOfferHover={handleOfferHover}
+                  />
                 </section>
 
                 <div className="cities__right-section">
                   <section className="cities__map map">
-                    <Map offers={sortedOffers} center={mapCenter} zoom={zoom} activeOfferId={activeOfferId} />
+                    <Map
+                      offers={sortedOffers}
+                      center={mapCenter}
+                      zoom={zoom}
+                      activeOfferId={activeOfferId}
+                    />
                   </section>
                 </div>
               </>
